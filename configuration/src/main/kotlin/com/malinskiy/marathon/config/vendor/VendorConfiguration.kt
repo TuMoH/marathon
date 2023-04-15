@@ -33,6 +33,7 @@ const val DEFAULT_APPLICATION_PM_CLEAR = false
 const val DEFAULT_TEST_APPLICATION_PM_CLEAR = false
 const val DEFAULT_INSTALL_OPTIONS = ""
 const val DEFAULT_WAIT_FOR_DEVICES_TIMEOUT = 30000L
+const val DEFAULT_COMMAND_EXECUTION_RETRY_COUNT = 2
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -64,6 +65,7 @@ sealed class VendorConfiguration {
         @JsonProperty("waitForDevicesTimeoutMillis") val waitForDevicesTimeoutMillis: Long = DEFAULT_WAIT_FOR_DEVICES_TIMEOUT,
         @JsonProperty("allureConfiguration") val allureConfiguration: AllureConfiguration = AllureConfiguration(),
         @JsonProperty("timeoutConfiguration") val timeoutConfiguration: TimeoutConfiguration = TimeoutConfiguration(),
+        @JsonProperty("commandExecutionRetryCount") val commandExecutionRetryCount: Int = DEFAULT_COMMAND_EXECUTION_RETRY_COUNT,
         @JsonProperty("fileSyncConfiguration") val fileSyncConfiguration: FileSyncConfiguration = FileSyncConfiguration(),
         @JsonProperty("threadingConfiguration") val threadingConfiguration: ThreadingConfiguration = ThreadingConfiguration(),
         @JsonProperty("testParserConfiguration") val testParserConfiguration: TestParserConfiguration = TestParserConfiguration.LocalTestParserConfiguration,
@@ -92,6 +94,7 @@ sealed class VendorConfiguration {
         var waitForDevicesTimeoutMillis: Long = DEFAULT_WAIT_FOR_DEVICES_TIMEOUT
         var allureConfiguration: AllureConfiguration = AllureConfiguration()
         var timeoutConfiguration: TimeoutConfiguration = TimeoutConfiguration()
+        var commandExecutionRetryCount: Int = DEFAULT_COMMAND_EXECUTION_RETRY_COUNT
         var fileSyncConfiguration: FileSyncConfiguration = FileSyncConfiguration()
         var threadingConfiguration: ThreadingConfiguration = ThreadingConfiguration()
         var testParserConfiguration: TestParserConfiguration = TestParserConfiguration.LocalTestParserConfiguration
@@ -117,6 +120,7 @@ sealed class VendorConfiguration {
             waitForDevicesTimeoutMillis,
             allureConfiguration,
             timeoutConfiguration,
+            commandExecutionRetryCount,
             fileSyncConfiguration,
             threadingConfiguration,
             testParserConfiguration,

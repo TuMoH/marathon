@@ -53,6 +53,7 @@ import com.malinskiy.marathon.device.file.measureFileTransfer
 import com.malinskiy.marathon.exceptions.DeviceLostException
 import com.malinskiy.marathon.execution.TestBatchResults
 import com.malinskiy.marathon.extension.escape
+import com.malinskiy.marathon.extension.withRetryOrNull
 import com.malinskiy.marathon.extension.withTimeout
 import com.malinskiy.marathon.extension.withTimeoutOrNull
 import com.malinskiy.marathon.test.TestBatch
@@ -139,8 +140,11 @@ class AdamAndroidDevice(
     }
 
     override suspend fun criticalExecuteShellCommand(command: String, errorMessage: String): String {
-        return withTimeoutOrNull(androidConfiguration.timeoutConfiguration.shell) {
-            client.execute(ShellCommandRequest(command), serial = adbSerial).output
+        return withRetryOrNull(androidConfiguration.commandExecutionRetryCount) {
+            logger.debug { "criticalExecuteShellCommand: $command" }
+            withTimeout(androidConfiguration.timeoutConfiguration.shell) {
+                client.execute(ShellCommandRequest(command), serial = adbSerial).output
+            }
         } ?: throw CommandRejectedException(errorMessage)
     }
 

@@ -77,6 +77,7 @@ class DevicePoolActor(
         devices.values.forEach {
             it.safeSend(DeviceEvent.WakeUp)
         }
+        checkNoActiveDevicesAndTerminate()
     }
 
     private suspend fun onQueueTerminated() {
@@ -136,13 +137,18 @@ class DevicePoolActor(
         val actor = devices.remove(device.serialNumber)
         actor?.safeSend(DeviceEvent.Terminate)
         logger.debug { "devices.size = ${devices.size}" }
+        checkNoActiveDevicesAndTerminate()
+    }
+
+    private fun noActiveDevices() = devices.isEmpty() || devices.all { it.value.isClosedForSend }
+
+    private fun checkNoActiveDevicesAndTerminate() {
         if (noActiveDevices()) {
+            logger.debug { "No active devices" }
             //TODO check if we still have tests and timeout if nothing available
             terminate()
         }
     }
-
-    private fun noActiveDevices() = devices.isEmpty() || devices.all { it.value.isClosedForSend }
 
     private suspend fun addDevice(device: Device) {
         if (devices.containsKey(device.serialNumber)) {
